@@ -84,7 +84,7 @@ function getMovie(){
 	 movieArray.splice(0, 3);
 	 var movieName = movieArray.join(" ");
 
-	request("http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&r=json", function (error, response, body) {
+	request("http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&tomatoes=true&r=json", function (error, response, body) {
 	  if (!error && response.statusCode == 200) {
 	    var movie = JSON.parse(body);
 	  }
@@ -98,8 +98,8 @@ function getMovie(){
 		console.log("Language: " + movie.Language);
 		console.log("Plot: " + movie.Plot);
 		console.log("Actors:  " + movie.Actors);
-		console.log("Rotten Tomatoes Rating: ");
-		console.log("Rotten Tomatoes URL: ");						
+		console.log("Rotten Tomatoes Rating: " + JSON.parse(body)['tomatoUserRating']);
+        console.log("Rotten Tomatoes URL: " + JSON.parse(body)['tomatoURL']);						
 	    console.log(" ")
 	    console.log("=======================================")
 
@@ -109,6 +109,48 @@ function getMovie(){
 
 //============================================================================================================================================================================================================================
 //OMDB End
+
+//RANDOM Start
+//============================================================================================================================================================================================================================
+var fs = require("fs");
+
+ function random(){
+	fs.readFile("random.txt", "utf8", function (err, data){
+  		if (err) throw err;
+  			var dataArray = data.split(",")
+  			var command = dataArray[0];
+  			var thisThing = dataArray[1];
+  			process.argv = [];
+  			process.argv.push(0)
+  			process.argv.push(0)
+  			process.argv.push(command);
+  			process.argv.push(thisThing);
+
+  			var command = process.argv[2];
+
+			switch(command){
+			 	case "my-tweets":
+			 		getMyTweets();
+			 		break;
+
+			 	case "spotify-this-song":
+			 		spotifySong();
+			 		break;
+				
+			 	case "movie-this":
+			 		getMovie();
+			 		break;
+
+			 	case "do-what-it-says":
+			 		random();
+			 		break;
+			};
+
+		});
+	};
+
+//============================================================================================================================================================================================================================
+//RANDOM End
 
 var command = process.argv[2];
 
@@ -125,8 +167,8 @@ var command = process.argv[2];
  		getMovie();
  		break;
 
- 	case "test3":
- 		console.log("test");
+ 	case "do-what-it-says":
+ 		random();
  		break;
 
 };
